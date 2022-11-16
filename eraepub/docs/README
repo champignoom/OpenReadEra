@@ -1,0 +1,112 @@
+CoolReader 3 - free e-book reader
+(c) Vadim Lopatin, 1998-2009
+
+LICENSE: All source codes (except thirdparty directory) 
+are provided under the terms of GNU GPL license, version 2
+
+Source code are available at sourceforge:
+git clone git://crengine.git.sourceforge.net/gitroot/crengine/crengine
+
+CoolReader Engine is a XML/CSS based visualization library for writing e-book readers.
+
+The goal is to write fast, compact and portable library
+which allows to create e-book readers for different platform
+including handheld devices with limited resources.
+
+This library is partially based on CoolReader2 e-book reader,
+but most parts are rewritten from scratch.
+
+Features:
+
+- Different font engines support
+    - grayscale bitmap font engine
+    - Win32 font support
+    - TTF fonts support via Freetype library
+- Text formatter with support of different paragraph and font styles,
+    which allows to prepare text to be drawed
+- XML parser with support of unicode (UTF-8 and UTF-16) and 8-bit encodings
+- 2 different DOM tree implementations
+    - Tiny DOM - compact readonly DOM tree
+        - doesn't use RAM to store document text but reads it from file by demand
+        - doesn't store formatted text in memory, but generates it on the fly
+        - parsed tree can be saved to file to allow fast re-opening of documents
+        - compact tree structure requires minimum amount of RAM
+        - optimized element names, attribute names and values string storing
+    - Fast DOM (in progress, not included to distribution) - fast but compact read/write tree
+        - editable document tree
+        - faster implementation
+        - optimized element names, attribute names and values string storing
+- Styles: CSS2 subset implementation
+    - only simple selectors ( element-name or universal selector * )
+    - definition for properties
+        - display
+        - white-space
+        - text-align
+        - vertical-align
+        - font-family
+        - font-size
+        - font-style
+        - font-weight
+        - text-indent
+        - line-height
+        - width
+        - height
+        - margin-left
+        - margin-right
+        - margin-top
+        - margin-bottom
+        - margin
+        - page-break-before
+        - page-break-after
+        - page-break-inside
+- DOM/CSS formatter allows to prepare document for drawing
+- Sample applications
+    - FB2 e-book reader for Windows
+    - FB2 e-book reader for X (Linux)
+- Tools
+    - TrueType to grayscale bitmap font convertor
+
+Authors
+
+- Vadim Lopatin (http://www.coolreader.org/) - most source code
+- Alan (http://alreader.kms.ru/) - hyphenation sypport code
+
+Getting started
+
+Before loading of document, you have to initialize font manager:
+
+- InitFontManager( lString8() );
+
+Please register fonts you want to make available using call of RegisterFont method.
+For bitmap font manager, parameter is filename of bitmap font.
+
+- fontMan->RegisterFont( lString8(fn) );
+
+Typical usage of LVDocView:
+- Load document using LVDocView::LoadDoc() method.
+- Call LVDocView::setStylesheet() to set stylesheet for document.
+- Set draw buffer dimensions using LVDocView::Resize(dx, dy).
+- LVDocView::Draw() draws document into gray buffer.
+
+Configuration:
+
+    // Define to 1 to use 64 bits for file position types
+    #define LVLONG_FILE_SUPPORT 0
+
+    // Max unpacked size of skin image to hold in cache unpacked
+    #define MAX_SKIN_IMAGE_CACHE_ITEM_UNPACKED_SIZE 80*80*4
+
+    // freetype font glyph buffer size, in bytes
+    // 0x20000 (_WIN32, LBOOK), 0x40000 (LINUX)
+    #define GLYPH_CACHE_SIZE 0x40000
+
+    // zlib stream decode cache size, used to avoid restart
+    // of decoding from beginning to move back
+    // 0x80000 (_WIN32, LBOOK), 0x40000 (LINUX)
+    #define ZIP_STREAM_BUFFER_SIZE 0x80000
+
+    // document stream buffer size
+    // 0x40000 (_WIN32, LBOOK), 0x20000 (LINUX)
+    #define FILE_STREAM_BUFFER_SIZE 0x40000
+
+    #define GRAY_INVERSE 0
